@@ -1,18 +1,22 @@
 package com.tmmf.test.entity;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @RedisHash("Item")
 public class ItemEntity implements Serializable {
+    @Id
     private long id;
     private String name;
     private String description;
     private int leadTime;
     private double weight;
+    private UUID owner;
     private LocalDateTime deliveryDate;
 
     public long getId() {
@@ -55,6 +59,14 @@ public class ItemEntity implements Serializable {
         this.weight = weight;
     }
 
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+    }
+
     public LocalDateTime getDeliveryDate() {
         return deliveryDate;
     }
@@ -71,6 +83,7 @@ public class ItemEntity implements Serializable {
                 ", description='" + description + '\'' +
                 ", leadTime=" + leadTime +
                 ", weight=" + weight +
+                ", owner=" + owner +
                 ", deliveryDate=" + deliveryDate +
                 '}';
     }

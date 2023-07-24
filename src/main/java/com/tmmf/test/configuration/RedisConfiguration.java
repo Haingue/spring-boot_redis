@@ -1,25 +1,31 @@
 package com.tmmf.test.configuration;
 
+import io.lettuce.core.ReadFrom;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
 public class RedisConfiguration {
-//    @Bean
-//    JedisConnectionFactory jedisConnectionFactory() {
-//        JedisConnectionFactory jedisConFactory
-//                = new JedisConnectionFactory();
-//        jedisConFactory.setHostName("localhost");
-//        jedisConFactory.setPort(6379);
-//        return jedisConFactory;
-//    }
 
-//    @Bean
-//    public RedisTemplate<String, Object> redisTemplate() {
-//        RedisTemplate<String, Object> template = new RedisTemplate<>();
-//        template.setConnectionFactory(jedisConnectionFactory());
-//        return template;
-//    }
+    @Value("${server.database.redis.host}")
+    private String redisHost;
+    @Value("${server.database.redis.port}")
+    private int redisPort;
+
+    @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
+//                .readFrom(ReadFrom.REPLICA_PREFERRED)
+                .build();
+
+        RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration(redisHost, redisPort);
+
+        return new LettuceConnectionFactory(serverConfig, clientConfig);
+    }
 }

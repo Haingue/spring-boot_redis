@@ -1,6 +1,7 @@
 package com.tmmf.test.dto;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record ItemDto(
         long id,
@@ -8,6 +9,7 @@ public record ItemDto(
         String description,
         int leadTime,
         double weight,
+        UUID owner,
         LocalDateTime deliveryDate
 ) {
 }

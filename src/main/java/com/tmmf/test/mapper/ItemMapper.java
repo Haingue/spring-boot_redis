@@ -11,6 +11,7 @@ public class ItemMapper {
                 entity.getDescription(),
                 entity.getLeadTime(),
                 entity.getWeight(),
+                entity.getOwner(),
                 entity.getDeliveryDate()
         );
     }
@@ -21,6 +22,7 @@ public class ItemMapper {
         entity.setDescription(dto.description());
         entity.setLeadTime(dto.leadTime());
         entity.setWeight(dto.weight());
+        entity.setOwner(dto.owner());
         entity.setDeliveryDate(dto.deliveryDate());
         return entity;
     }

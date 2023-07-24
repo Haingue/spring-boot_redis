@@ -9,6 +9,7 @@ import com.tmmf.test.repository.ItemRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,14 +17,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@Service
 public class ItemService {
     private static final Logger logger = LoggerFactory.getLogger(ItemService.class);
     @Autowired
     private ItemRepository itemRepository;
 
 
-    private Optional<ItemEntity> findOne (ItemDto entity) {
-        return itemRepository.findById(entity.id());
+    private Optional<ItemEntity> findOne (long id) {
+        return itemRepository.findById(id);
     }
 
     private ItemEntity saveItem (ItemEntity entity) {
@@ -51,14 +53,16 @@ public class ItemService {
     }
 
     public ItemDto updateItem (ItemDto dto) {
-        if (!findOne(dto).isPresent()) throw new ItemNotFoundException();
+        if (!isValid(dto)) throw new ItemNotValidException();
+        if (!findOne(dto.id()).isPresent()) throw new ItemNotFoundException();
         ItemEntity entity = ItemMapper.dtoToEntity(dto);
         entity = saveItem(entity);
         return ItemMapper.entityToDto(entity);
     }
 
-    public void deleteItem (ItemDto dto) {
-        if (!findOne(dto).isPresent()) throw new ItemNotFoundException();
-        itemRepository.deleteById(dto.id());
+    public void deleteItem (long id) {
+        if (id < 1) throw new ItemNotValidException();
+        if (!findOne(id).isPresent()) throw new ItemNotFoundException();
+        itemRepository.deleteById(id);
     }
 }
