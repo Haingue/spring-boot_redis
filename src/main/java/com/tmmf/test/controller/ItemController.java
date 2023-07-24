@@ -42,7 +42,7 @@ public class ItemController {
         } catch (ItemNotValidException error) {
             return ResponseEntity.badRequest().build();
         } catch (ItemNotFoundException error) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         } catch (Exception error) {
             return ResponseEntity.internalServerError().build();
         }
@@ -56,7 +56,7 @@ public class ItemController {
         } catch (ItemNotValidException error) {
             return ResponseEntity.badRequest().build();
         } catch (ItemNotFoundException error) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         } catch (Exception error) {
             return ResponseEntity.internalServerError().build();
         }

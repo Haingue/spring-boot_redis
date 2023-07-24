@@ -1,6 +1,9 @@
 package com.tmmf.test.controller;
 
 import com.tmmf.test.dto.ItemDto;
+import com.tmmf.test.entity.ItemEntity;
+import com.tmmf.test.mapper.ItemMapper;
+import com.tmmf.test.repository.ItemRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -19,10 +22,14 @@ class ItemControllerTest {
     @Autowired
     private WebTestClient webClient;
 
+    @Autowired
+    private ItemRepository itemRepository;
+
     @Test
     @Order(1)
     public void prepareTesting () {
         Assertions.assertNotNull(webClient, "The client is null");
+        Assertions.assertNotNull(itemRepository, "The itemRepository is null");
     }
 
     @Test
@@ -43,12 +50,14 @@ class ItemControllerTest {
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody(ItemDto.class).value(itemResult -> itemResult.equals(itemDto));
+        Assertions.assertTrue(itemRepository.findById(itemDto.id()).isPresent());
     }
 
     @Test
     @Order(4)
     public void shouldUpdateItem () {
         ItemDto itemDto = new ItemDto(1L, "TEST", "DESC TEST", 5, 0.5, UUID.randomUUID(), LocalDateTime.now());
+        itemRepository.save(ItemMapper.dtoToEntity(itemDto));
         webClient.put().uri("/service/item")
                 .bodyValue(itemDto)
                 .exchange()
@@ -60,11 +69,13 @@ class ItemControllerTest {
     @Order(5)
     public void shouldDeleteItem () {
         ItemDto itemDto = new ItemDto(1L, "TEST", "DESC TEST", 5, 0.5, UUID.randomUUID(), LocalDateTime.now());
+        itemRepository.save(ItemMapper.dtoToEntity(itemDto));
         webClient.delete()
                 .uri(uriBuilder -> uriBuilder.path("/service/item").queryParam("id",  itemDto.id()).build())
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody().isEmpty();
+        Assertions.assertFalse(itemRepository.findById(itemDto.id()).isPresent());
     }
 
     @Test
