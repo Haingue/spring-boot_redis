@@ -17,7 +17,7 @@ class HomeControllerTest {
     }
 
     @Test
-    public void shouldHomePage () {
+    void shouldHomePage () {
         client.get().uri("/hello")
                 .exchange()
                 .expectAll(

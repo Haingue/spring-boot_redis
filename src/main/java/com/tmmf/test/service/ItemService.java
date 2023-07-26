@@ -14,12 +14,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
 public class ItemService {
-    private static final Logger logger = LoggerFactory.getLogger(ItemService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemService.class);
     @Autowired
     private ItemRepository itemRepository;
 
@@ -42,7 +41,7 @@ public class ItemService {
     public List<ItemDto> loadAllItem () {
         return StreamSupport.stream(itemRepository.findAll().spliterator(), false)
                 .map(ItemMapper::entityToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public ItemDto createItem (ItemDto dto) {
@@ -54,7 +53,7 @@ public class ItemService {
 
     public ItemDto updateItem (ItemDto dto) {
         if (!isValid(dto)) throw new ItemNotValidException();
-        if (!findOne(dto.id()).isPresent()) throw new ItemNotFoundException();
+        if (findOne(dto.id()).isEmpty()) throw new ItemNotFoundException();
         ItemEntity entity = ItemMapper.dtoToEntity(dto);
         entity = saveItem(entity);
         return ItemMapper.entityToDto(entity);
@@ -62,7 +61,7 @@ public class ItemService {
 
     public void deleteItem (long id) {
         if (id < 1) throw new ItemNotValidException();
-        if (!findOne(id).isPresent()) throw new ItemNotFoundException();
+        if (findOne(id).isEmpty()) throw new ItemNotFoundException();
         itemRepository.deleteById(id);
     }
 }

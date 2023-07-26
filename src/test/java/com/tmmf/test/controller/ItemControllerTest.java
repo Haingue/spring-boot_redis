@@ -1,7 +1,6 @@
 package com.tmmf.test.controller;
 
 import com.tmmf.test.dto.ItemDto;
-import com.tmmf.test.entity.ItemEntity;
 import com.tmmf.test.mapper.ItemMapper;
 import com.tmmf.test.repository.ItemRepository;
 import org.junit.jupiter.api.*;
@@ -27,14 +26,14 @@ class ItemControllerTest {
 
     @Test
     @Order(1)
-    public void prepareTesting () {
+    void prepareTesting () {
         Assertions.assertNotNull(webClient, "The client is null");
         Assertions.assertNotNull(itemRepository, "The itemRepository is null");
     }
 
     @Test
     @Order(2)
-    public void shouldLoadItems () {
+    void shouldLoadItems () {
         webClient.get().uri("/service/item")
                 .exchange()
                 .expectStatus().isOk()
@@ -55,7 +54,7 @@ class ItemControllerTest {
 
     @Test
     @Order(4)
-    public void shouldUpdateItem () {
+    void shouldUpdateItem () {
         ItemDto itemDto = new ItemDto(1L, "TEST", "DESC TEST", 5, 0.5, UUID.randomUUID(), LocalDateTime.now());
         itemRepository.save(ItemMapper.dtoToEntity(itemDto));
         webClient.put().uri("/service/item")
@@ -80,7 +79,7 @@ class ItemControllerTest {
 
     @Test
     @Order(6)
-    public void shouldNotFindItem () {
+    void shouldNotFindItem () {
         ItemDto itemDto = new ItemDto(1L, "TEST", "DESC TEST", 5, 0.5, UUID.randomUUID(), LocalDateTime.now());
         webClient.get().uri("/service/item")
                 .exchange()
